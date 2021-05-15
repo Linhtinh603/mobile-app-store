@@ -31,6 +31,13 @@ class ViewUtility
         }
     }
 
+    public static function renderJSON($content, $statuscode = 200){
+        ob_clean();
+        http_response_code($statuscode);
+        header('Content-type: application/json');
+        echo json_encode($content);
+    }
+
     public static function notBlank(string $value) {
         if(empty($value)){
             return false;

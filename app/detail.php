@@ -10,7 +10,7 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 $pdo = Common::getPdo();
-$sql = 'SELECT a.* , c.name as catgory , d.developer_name, d.email, d.developer_address  FROM apps a INNER JOIN categories c ON a.category_id = c.id ';
+$sql = 'SELECT a.* , c.name as category , d.developer_name, d.email, d.developer_address  FROM apps a INNER JOIN categories c ON a.category_id = c.id ';
 $sql .= ' INNER JOIN accounts d ON a.created_by = d.id';
 $sql .= ' WHERE a.id= :id AND a.status = 2';
 $sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -32,14 +32,18 @@ $app['downloadCount'] = $red[0]['COUNT(*)'];
 // xu ly nut tai ,mua
 
 if ($app['price'] > 0) {
-  $sql = 'SELECT COUNT(*) FROM app_purchased_history where account_id = :account_id and app_id = :app_id';
-  $sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-  $sth->execute(array(':account_id' => AccountUtility::getId(), ':app_id' => $id));
-  $red = $sth->fetchAll();
-  if ($red[0]['COUNT(*)'] == 0) {
-    $app['requiredBuy'] = true;
+  if (AccountUtility::isLogin()) {
+    $sql = 'SELECT COUNT(*) FROM app_purchased_history where account_id = :account_id and app_id = :app_id';
+    $sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+    $sth->execute(array(':account_id' => AccountUtility::getId(), ':app_id' => $id));
+    $red = $sth->fetchAll();
+    if ($red[0]['COUNT(*)'] == 0) {
+      $app['requiredBuy'] = true;
+    } else {
+      $app['requiredBuy'] = false;
+    }
   } else {
-    $app['requiredBuy'] = false;
+    $app['requiredBuy'] = true;
   }
 } else {
   $app['requiredBuy'] = false;
@@ -55,10 +59,23 @@ if ($app['price'] > 0) {
   <title>Xem chi tiết ứng dụng</title>
   <?php require_once __DIR__ . '/../layout/head.php' ?>
   <?php require_once __DIR__ . '/../layout/header.php' ?>
+  <script>
+    var id = <?= $id ?>;
+    var isLogin = <?= AccountUtility::isLogin() ? 'true' : 'false' ?>;
+  </script>
 </head>
 
 <body class="xemchitiet">
   <div class="app-detai shadow p-3 m-5 bg-white rounded">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../">Home</a></li>
+            <li class="breadcrumb-item"><a href="./app-listing?category=">Danh mục <?= $app['catgory'] ?></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ứng dụng <?= $app['name'] ?></li>
+            
+    </nav>
+
     <div class="row mx-auto">
       <div class="col-2">
         <div class="">
@@ -68,8 +85,8 @@ if ($app['price'] > 0) {
       <div class="col">
         <div class="">
           <h3 class="text-info"><?= $app['name'] ?></h3>
-          <a href="#" class="font-weight-bold"><?= $app['developer_name'] ?></a>
-          <a href="#" class="p-3 font-weight-bold"><?= $app['catgory'] ?></a>
+          <a href="<?= Config::get('publicPath') . '/app/app-listing.php?user_app=' .  $app['created_by'] ?>" class="font-weight-bold"><?= $app['developer_name'] ?></a>
+          <a href="<?= Config::get('publicPath') . 'app/app-listing.php?category=' . $app['category_id'] . '&category_name=' . $app['category'] ?>" class="p-3 font-weight-bold"><?= $app['category'] ?></a>
           <p><em><?= $app['short_description'] ?></em></p>
           <?php if ($app['price'] == 0) { ?>
             <div class="badge badge-primary text-wrap">
@@ -83,9 +100,15 @@ if ($app['price'] > 0) {
               <?= number_format($app['price'], 0, '', ',') ?> VNĐ
             </div>
           <?php } ?>
-          <form action="<?= Config::get('publicPath') . 'app/purchase.php' ?>">
-            <button class="btn btn-primary float-right" type="submit"><?=  $app['requiredBuy'] ? 'Mua ngay': 'Tải xuống' ?></button>
-          </form>
+          <?php if ($app['requiredBuy']) { ?>
+            <button id="buyNowBtn" class="btn btn-primary float-right" type="button">Mua ngay</button>
+          <?php  } else { ?>
+            <form action="<?= Config::get('publicPath') . "app/download.php" ?>" method="GET">
+              <input type="hidden" name="id" value="<?= $id ?>" />
+              <button class="btn btn-primary float-right" type="submit">Tải xuống</button>
+            </form>
+          <?php } ?>
+
         </div>
       </div>
     </div>
@@ -103,7 +126,7 @@ if ($app['price'] > 0) {
           </div> -->
           <?php foreach ($app['images'] as $index => $image) { ?>
             <div class="carousel-item <?= $index == 0 ? 'active' : '' ?>">
-              <img class="mx-auto d-block" src="<?= Config::get('publicPath') . 'public/upload_app_images/' . $image . '.jpg' ?>" class="d-block">
+              <img class="mx-auto d-block" src="<?= Config::get('publicPath') . "public/upload_app_images/$id/"  . $image . '.jpg' ?>" class="d-block">
             </div>
           <?php } ?>
         </div>
@@ -184,5 +207,6 @@ if ($app['price'] > 0) {
   </div>
 </body>
 <?php require_once __DIR__ . '/../layout/footer.php' ?>
+<?php require_once __DIR__ . '/../layout/modal.php' ?>
 
 </html>

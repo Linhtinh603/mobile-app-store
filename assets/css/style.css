@@ -17,7 +17,17 @@
     min-height: 47px;
 }
 
-.header .avatar{
+.app-logo{
+    width: 120px;
+    height: 120px;
+}
+
+.app-icon{
+    width: 50px;
+    height: 50px;
+}
+
+.header .avatar {
     width: 50px;
     height: 50px;
     float: left;
@@ -87,4 +97,29 @@ body.xemchitiet .carousel-item img {
 .developer-index .css-div-check-money {
     padding: 7px;
     border: 1px solid #474e42;
+}
+
+#pager li {
+    list-style-type: none;
+}
+
+#pager li a {
+    background: #f0f0f0;
+    color: #222;
+    display: block;
+    padding: 10px;
+    font-size: 14px;
+    min-width: 46px;
+}
+
+#pager li a.active {
+    background: #03a678;
+    color: white;
+}
+
+.div-pagination {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

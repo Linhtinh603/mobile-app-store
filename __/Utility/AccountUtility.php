@@ -47,6 +47,10 @@ class AccountUtility
         return self::$info['email'];
     }
 
+    public static function getFullName(){
+        return self::$info['full_name'];
+    }
+
     public static function requireLogin(){
         if(!self::isLogin()){
             $actual_link = ViewUtility::getCurrentUrl();
