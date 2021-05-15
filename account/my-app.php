@@ -9,6 +9,25 @@ require_once __DIR__ . '/../__/bootstrap.php';
     <?php require_once __DIR__ . '/../layout/header.php' ?>
 </head>
 
+<?php 
+    use App\Utility\AccountUtility;
+    use App\Utility\ViewUtility;
+
+    $pdo = Common::getPdo();
+    $DOMAIN_URL = Config::get('publicPath');
+
+    if(!AccountUtility::isLogin()){
+        ViewUtility::redirectUrl();
+    }   
+    $user_id_current = AccountUtility::getId();
+
+    $sql_get_category = "SELECT a.name as app_name, ca.name as cate_name, ph.purchased_price 
+                        from app_purchased_history ph left join apps a on ph.app_id = a.id 
+                        left join categories ca on a.category_id = ca.id 
+                        where ph.account_id = $user_id_current order by a.id desc";
+
+?>
+  
 <body class="quanlyapp ">
 <div class="shadow-sm p-2 m-2 bg-white rounded">
 
@@ -42,39 +61,28 @@ require_once __DIR__ . '/../__/bootstrap.php';
                 </thead>
                 <tbody>
                     <!-- badge-Light: Bản nháp | badge-Info: đang chờ duyệt | badge-success: Đã được duyệt | badge-dark: đã từ chối  | badge-Danger: Đã gỡ |  -->
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Facebook</td>
-                        <td>Mạng xã hội</td>
-                        <td> <span class="badge badge-success"> Miễn phí </span> </td>
-                        <td> 0đ </td>
-                        <td> <a href="#">Tải xuống</a>  <td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Facebook</td>
-                        <td>Mạng xã hội</td>
-                        <td> <span class="badge badge-primary"> Có phí </span> </td>
-                        <td> 10 000đ </td>
-                        <td> <a href="#">Tải xuống</a>  <td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Facebook</td>
-                        <td>Mạng xã hội</td>
-                        <td> <span class="badge badge-primary"> Có phí </span> </td>
-                        <td> 10 000đ </td>
-                        <td> <a href="#">Tải xuống</a>  <td>
-                    </tr>
+                    <?php 
+                        $i = 1;
+                        foreach($pdo->query($sql_get_category) as $v){ 
+                    ?>
+                        <tr>
+                            <th scope="row"><?=$i?></th>
+                            <td><?=$v['app_name']?></td>
+                            <td><?=$v['cate_name']?></td>
+                            <?php if($v['purchased_price'] == 0){ ?>
+                                <td> <span class="badge badge-success"> Miễn phí </span> </td>
+                                <td> 0đ </td>
+                            <?php }else{ ?>
+                                <td> <span class="badge badge-primary"> Mất Phí </span> </td>
+                                <td> <?=$v['purchased_price']?> </td>
+                            <?php } ?>
+                            <td> <a href="#">Tải xuống</a>  <td>
+                        </tr>
+                    <?php $i ++; } ?>
                 </tbody>
             </table>
-
-
         </div>
-
     </div>
-
-
 </div>
 </body>
 <?php require_once __DIR__ . '/../layout/footer.php' ?>

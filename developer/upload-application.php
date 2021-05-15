@@ -40,8 +40,13 @@ use App\Utility\ViewUtility;
         $category = $_POST['category'];
         $price = isset($_POST['price']) && $_POST['price'] ? $_POST['price'] : 0;
       
+        $status = 0;
+        if(isset($_POST['checkPostAppSave']) && $_POST['checkPostAppSave']){
+            $status = 1;
+        }
+
         $sql_insert_app_post = "INSERT into apps(name, short_description, detail_description, category_id, price, status, created_by, created_time)
-                                values ('{$name}', '{$descript}', '{$descript_detail}', '{$category}', '{$price}', 0, '{$user_cd}', '{$now}')";
+                                values ('{$name}', '{$descript}', '{$descript_detail}', '{$category}', '{$price}', '{$status}', '{$user_cd}', '{$now}')";
         $insert_app = $pdo->exec($sql_insert_app_post);   
 
         if($insert_app){
@@ -69,8 +74,6 @@ use App\Utility\ViewUtility;
             $total = count($_FILES['img_list']['name']);
             if(!isset($_FILES['img_list'])){
             }else{
-                print_r($_FILES['img_list']['name']);
-                print_r($total);
                 if($total > 0){
                     $path_img = "../public/upload_app_images/$id_apps";
                     $path_upload = "../public/upload_app_images/$id_apps/";
@@ -212,6 +215,7 @@ use App\Utility\ViewUtility;
             <input type="hidden" id="checkImgList">
             <input type="hidden" id="checkFileSetting">
             <input type="hidden" name="postApp" value="1">
+            <input type="hidden" name="checkPostAppSave" id="checkPostAppSave" value = "">
 
             <button type="button" class="btn btn-secondary" onclick="clickPostAppTemp()">Lưu bản nháp</button>
             <button type="button" class="btn btn-primary" onclick="clickPostApp()">Đăng tải</button>
@@ -286,6 +290,7 @@ use App\Utility\ViewUtility;
             alert('Bạn phải nhập Name , Tên thể loại , Loại ứng dụng');
             return ;
         }
+        $('#checkPostAppSave').val('');
         $('#submitFormPostApp').submit();
     }
 
@@ -313,7 +318,7 @@ use App\Utility\ViewUtility;
             alert('Giá phí phải > 0');
             return ;
         }
-
+        $('#checkPostAppSave').val('1');
         $('#submitFormPostApp').submit();
     }
 
