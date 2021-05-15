@@ -43,7 +43,7 @@ use App\Utility\ViewUtility;
         $sql_insert_app_post = "INSERT into apps(name, short_description, detail_description, category_id, price, status, created_by, created_time)
                                 values ('{$name}', '{$descript}', '{$descript_detail}', '{$category}', '{$price}', 0, '{$user_cd}', '{$now}')";
         $insert_app = $pdo->exec($sql_insert_app_post);   
-    
+
         if($insert_app){
             // get app_id last
             $sql_get_last_app_id = "SELECT id from apps order by id desc limit 1";
@@ -67,17 +67,23 @@ use App\Utility\ViewUtility;
             // upload list img
             $sql_list_img = '';
             $total = count($_FILES['img_list']['name']);
-            if($total > 0){
-                $path_img = "../public/upload_app_images/$id_apps";
-                $path_upload = "../public/upload_app_images/$id_apps/";
-                $list_img = uploadMultipleImg('img_list',$total, $path_img, $path_upload);
-                $list_img = $list_img;
+            if(!isset($_FILES['img_list'])){
+            }else{
+                print_r($_FILES['img_list']['name']);
+                print_r($total);
+                if($total > 0){
+                    $path_img = "../public/upload_app_images/$id_apps";
+                    $path_upload = "../public/upload_app_images/$id_apps/";
+                    $list_img = uploadMultipleImg('img_list',$total, $path_img, $path_upload);
+                    $list_img = $list_img;
 
-                $sql_list_img = $list_img;
+                    $sql_list_img = $list_img;
+                }
             }
 
             // upload file .zip
-            $sql_get_size_zip = '';
+            $sql_get_size_zip = 0;
+            $download_location = '';
             if(!isset($_FILES['file_setting']) || $_FILES['file_setting']['error'] > 0){
             }
             else{
@@ -95,15 +101,18 @@ use App\Utility\ViewUtility;
                         $size_file_zip = filesize("../__/file_setting/$id_apps/0.zip");
 
                         $sql_get_size_zip = $size_file_zip;
+                        $download_location = "$id_apps/0.zip";
                     }
                 }
             }
 
-            $sql_update_post_app = "UPDATE apps set icon = '$sql_icon',images = '$sql_list_img', size = '$sql_get_size_zip'
+            $sql_update_post_app = "UPDATE apps set icon = '$sql_icon',images = '$sql_list_img', 
+                                        size = $sql_get_size_zip, download_location = '$download_location'
                                     where id = $id_apps";
             $pdo->exec($sql_update_post_app);
         }
-        
+
+        ViewUtility::redirectUrl('developer/my-dev-app.php');
     } 
 
     // function upload 1 img
@@ -138,6 +147,13 @@ use App\Utility\ViewUtility;
 ?>
 
 <body class="developer-index">
+    <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../">Home</a></li>
+                <li class="breadcrumb-item"><a href="./my-dev-app.php">Quản lý ứng dụng</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Đăng tải ứng dụng</li>
+            </ol>
+    </nav>
     <div class="developer-body shadow-sm p-3 m-4 bg-white rounded">
         <h3 class="text-center font-weight-bolder">Đăng tải ứng dụng mới</h3>
         <span style="color:red">(*)</span> Yêu cầu bắt buộc nhập/ Nếu đăng tải không lưu nháp thì yêu cầu nhập hết các trường
@@ -179,7 +195,7 @@ use App\Utility\ViewUtility;
             </div>
             <div class="form-group" style="display: none;" id="show-price-app">
                 <label for="price" class="font-weight-bold">Giá bán: </label>
-                <input type="number" class="form-control" id="price" placeholder="Vui lòng nhập giá bán cho ứng dụng có phí" name="price">
+                <input type="number" class="form-control" id="price" value="0" placeholder="Vui lòng nhập giá bán cho ứng dụng có phí" name="price">
             </div>
             <div class="form-group">
                 <label for="file_setting" class="font-weight-bold">Upload file cài đặt: </label>
@@ -280,14 +296,21 @@ use App\Utility\ViewUtility;
             descript_detail = $('#descript_detail').val(),
             category = $('#category').val(),
             category_app = $('#category_app').val(),
-            price = $('#price').val(),
+            price = new Number($('#price').val()),
             checkIcon = $('#checkIcon').val(),
             checkFileSetting = $('#checkFileSetting').val(),
             checkImgList = $('#checkImgList').val();
 
         if(!name || !descript || !descript_detail || !category || !category_app 
             || !checkIcon || !checkFileSetting || !checkImgList){
+                $er = name + descript + descript_detail + category + category_app + checkIcon + checkFileSetting+ checkImgList;
+                console.log($er);
+
             alert('Bạn phải nhập hết các trường');
+            return ;
+        }
+        if(category_app == 'not_free' && price <= 0){
+            alert('Giá phí phải > 0');
             return ;
         }
 

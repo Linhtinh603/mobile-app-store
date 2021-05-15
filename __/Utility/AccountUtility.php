@@ -39,16 +39,20 @@ class AccountUtility
         return self::$info['account_type'] == self::DEV;
     }
 
+    public static function get($key){
+        return self::$info[$key] ?? null;
+    }
+
     public static function getId(){
-        return self::$info['id'];
+        return self::$info['id'] ?? null;
     }
 
     public static function getEmail() {
-        return self::$info['email'];
+        return self::$info['email'] ?? null;
     }
 
     public static function getFullName(){
-        return self::$info['full_name'];
+        return self::$info['full_name'] ?? null;
     }
 
     public static function requireLogin(){

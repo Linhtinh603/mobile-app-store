@@ -25,7 +25,7 @@ require_once __DIR__ . '/head.php' ?>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-            <a class="nav-link" href="#">Trang chủ <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="<?=  Config::get('publicPath') ?>">Trang chủ <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -55,19 +55,20 @@ require_once __DIR__ . '/head.php' ?>
         <ul class="navbar-nav mr-auto">
             <?php if(AccountUtility::isLogin()) { ?>
                 <li class="nav-item dropdown">
-                <img class="avatar" src="https://img.favpng.com/11/7/0/q-version-avatar-soldier-blog-military-png-favpng-Sgyu8XK29KqhCDwSgjb5WnScm_t.jpg"></img>
+                <img class="avatar" src="<?=  Config::get('publicPath') . 'public/' . AccountUtility::get('avatar') ?>"></img>
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?= AccountUtility::getFullName() ?>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Thông tin cá nhân</a>
-                <a class="dropdown-item" href="#">Nạp tiền</a>
+                <a class="dropdown-item" href="<?=  Config::get('publicPath') . 'account' ?>">Thông tin cá nhân</a>
+                <a class="dropdown-item" href="<?=  Config::get('publicPath') . 'account/balance.php' ?>">Nạp tiền</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="<?=  Config::get('publicPath') . 'account/logout.php' ?>">Đăng xuất</a>
                 </div>
             </li>
             <?php } else { ?>
             <a class="nav-link" href="<?=  Config::get('publicPath') . 'account/login.php' ?>">Đăng nhập</a>
+            <a class="nav-link" href="<?=  Config::get('publicPath') . 'account/register.php' ?>">Đăng ký</a>
             <?php } ?>
         </ul>
     </div>

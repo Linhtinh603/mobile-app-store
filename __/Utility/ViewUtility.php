@@ -47,6 +47,14 @@ class ViewUtility
         return $value != '';
     }
 
+    public static function vaildLength(string $value, int $length) {
+        if(strlen($value) == $length){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function vaildMaxLength(string $value, int $length) {
         if(strlen($value) <= $length){
             return true;
@@ -74,5 +82,3 @@ class ViewUtility
 
 
 }
-?>
-
