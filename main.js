@@ -1,4 +1,4 @@
-var publicPath = 'http://mobile-app-store.herokuapp.com/';
+var publicPath = '/';
 
 /*
  *  
@@ -188,16 +188,24 @@ function developer_upload_application() {
         });
 
         $("#file_setting").change(function () {
-            if (this.files[0].size >= 1000000) {
-                alert('Dung lượng file phải < 1000000');
-                return;
-            }
+            var check_extention = $(this).val();
+            var extension = check_extention.split('.').pop().toLowerCase();
 
-            if (this.files[0].size > 0) {
-                $('#checkFileSetting').val('1');
-            } else {
-                alert('Dung lượng file phải > 0');
-                $('#checkFileSetting').val('');
+            if (this.files.length > 0) {
+                if ($.inArray(extension, ['zip']) == -1) {
+                    alert("File ảnh phải .zip");
+                    $(this).val('');
+                    return;
+                }
+
+                if (this.files[0].size >= 1000000) {
+                    alert('Dung lượng file phải < 1000000');
+                    $(this).val('');
+                    $('#checkFileSetting').val('');
+                    return;
+                } else {
+                    $('#checkFileSetting').val('1');
+                }
             }
 
         });
@@ -266,12 +274,7 @@ function developer_update_application() {
     window.clickPostApp = clickPostApp;
 
     $(document).ready(function () {
-        if (file_setting) {
-            $('#file_setting').html('Bạn đã có file');
-            console.log($('#file_setting').attr('title'));
-        }
 
-        console.log(icon_p + img_list_p + '000');
         if (icon_p) {
             $('#checkIcon').val('1');
         }
@@ -306,22 +309,27 @@ function developer_update_application() {
                 alert('Không được thay đổi file cài đặt');
                 return;
             }
-            if (this.files[0].size >= 1000000) {
-                alert('Dung lượng file phải < 1000000');
-                return;
+
+            var check_extention = $(this).val();
+            var extension = check_extention.split('.').pop().toLowerCase();
+
+            if (this.files.length > 0) {
+                if ($.inArray(extension, ['zip']) == -1) {
+                    alert("File ảnh phải .zip");
+                    $(this).val('');
+                    return;
+                }
+
+                if (this.files[0].size >= 1000000) {
+                    alert('Dung lượng file phải < 1000000');
+                    $(this).val('');
+                    $('#checkFileSetting').val('');
+                    return;
+                } else {
+                    $('#checkFileSetting').val('1');
+                }
             }
 
-            if (this.files[0].size > 0) {
-                $('#checkFileSetting').val('1');
-            } else {
-                $('#checkFileSetting').val('');
-            }
-
-            if (this.files[0].size > 0) {
-                $('#checkFileSetting').val('1');
-            } else {
-                $('#checkFileSetting').val('');
-            }
         });
 
         $("#img_list").change(function () {
@@ -527,9 +535,9 @@ if (location.pathname.endsWith('/admin/category.php')) {
  */
 
 
-function admin_card(){
-    if ( window.history.replaceState ) {
-        window.history.replaceState( null, null, window.location.href );
+function admin_card() {
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
     }
 }
 

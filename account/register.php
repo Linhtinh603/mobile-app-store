@@ -59,7 +59,7 @@ function processPost()
         return;
     }
 
-    
+
 
     $password = md5($password);
 
@@ -81,8 +81,12 @@ function processPost()
     $red = $sth->fetchAll();
     AccountUtility::setLogin($red[0]);
 
-    $imageFileType = strtolower(pathinfo($_FILES["avatar"]["name"],PATHINFO_EXTENSION));
-    $publicPathAvatar = 'upload_avatar/'. AccountUtility::getId() . '.' . $imageFileType;
+    $imageFileType = strtolower(pathinfo($_FILES["avatar"]["name"], PATHINFO_EXTENSION));
+    $publicPathAvatar = 'upload_avatar/' . AccountUtility::getId() . '.' . $imageFileType;
+    $targetFolder = __DIR__ . '/../public/upload_avatar';
+    if (!file_exists($targetFolder)) {
+        mkdir($targetFolder, 0777);
+    }
     $target_file = __DIR__ . '/../public/' . $publicPathAvatar;
     move_uploaded_file($_FILES["avatar"]["tmp_name"], $target_file);
 
@@ -92,6 +96,7 @@ function processPost()
         ':id' => AccountUtility::getId(),
         ':avatar' => $publicPathAvatar,
     ]);
+    AccountUtility::set('avatar', $publicPathAvatar);
     ViewUtility::redirectUrl();
 }
 if (ViewUtility::isPostReq()) {

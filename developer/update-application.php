@@ -192,12 +192,12 @@ use App\Utility\ViewUtility;
                 <input type="text" class="form-control" id="name" placeholder="Vui lòng nhập tên ứng dụng" name="name" value="<?=$name?>">
             </div>
             <div class="form-group">
-                <label for="icon" class="font-weight-bold">Icon ứng dụng</label>
+                <label for="icon" class="font-weight-bold">Icon ứng dụng (File JPG, PNG, JPEG)</label>
                 <?php if($icon){ ?>
                     <br>
                     <label class="font-weight-light">Bạn đã chọn FILE nếu muốn thay đổi hay chọn lại!</label>
                 <?php } ?>
-                <input type="file" class="form-control-file" id="icon" name="icon" value="<?=$DOMAIN_URL.$icon?>">
+                <input type="file" class="form-control-file" id="icon" name="icon" value="<?=$DOMAIN_URL.$icon?>" accept="image/png, image/jpeg">
             </div>
             <div class="form-group">
                 <label for="descript" class="font-weight-bold">Mô tả ngắn</label>
@@ -208,12 +208,12 @@ use App\Utility\ViewUtility;
                 <textarea type="text" class="form-control" id="descript_detail" placeholder="Vui lòng nhập mô tả chi tiết" name="descript_detail"><?=$descript_detail?></textarea>
             </div>
             <div class="form-group">
-                <label for="img_list" class="font-weight-bold">Danh sách ảnh giới thiệu </label>
+                <label for="img_list" class="font-weight-bold">Danh sách ảnh giới thiệu (File JPG, PNG, JPEG)</label>
                 <?php if($img_list){ ?>
                     <br>
                     <label class="font-weight-light">Bạn đã chọn FILE nếu muốn thay đổi hay chọn lại!</label>
                 <?php } ?>
-                <input type="file" class="form-control-file" id="img_list" name="img_list[]"  multiple="multiple" >
+                <input type="file" class="form-control-file" id="img_list" name="img_list[]"  multiple="multiple" accept="image/png, image/jpeg">
             </div>
             <div class="form-group">
                 <label for="category" class="font-weight-bold">Thể loại <span style="color:red">(*)</span> </label>
@@ -236,7 +236,7 @@ use App\Utility\ViewUtility;
                     placeholder="Vui lòng nhập giá bán cho ứng dụng có phí" name="price">
             </div>
             <div class="form-group">
-                <label for="file_setting" class="font-weight-bold">Upload file cài đặt: (Dung lượng tối đa: 1000000)</label>
+                <label for="file_setting" class="font-weight-bold">Upload file cài đặt (File .zip): (Dung lượng tối đa: 1000000)</label>
                 <?php if(!$file_setting){ ?>
                     <input type="file" class="form-control-file" id="file_setting" <?php if($status == 2){echo 'disabled';} ?>
                         name="file_setting" accept="zip/*" >
