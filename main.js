@@ -1,4 +1,4 @@
-var publicPath = 'https://mobile-app-store.herokuapp.com/';
+var publicPath = 'https//mobile-app-store.herokuapp.com/';
 
 /*
  *  
