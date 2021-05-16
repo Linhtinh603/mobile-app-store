@@ -1,4 +1,4 @@
-var publicPath = '/AppStoreOffshore/src/';
+var publicPath = '/';
 
 /*
  *  
