@@ -193,7 +193,7 @@ function developer_upload_application() {
 
             if (this.files.length > 0) {
                 if ($.inArray(extension, ['zip']) == -1) {
-                    alert("File ảnh phải .zip");
+                    alert("File ứng dụng phải là file .zip");
                     $(this).val('');
                     return;
                 }
@@ -315,7 +315,7 @@ function developer_update_application() {
 
             if (this.files.length > 0) {
                 if ($.inArray(extension, ['zip']) == -1) {
-                    alert("File ảnh phải .zip");
+                    alert("File ứng dụng phải là file .zip");
                     $(this).val('');
                     return;
                 }
