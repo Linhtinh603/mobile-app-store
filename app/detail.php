@@ -71,7 +71,7 @@ if ($app['price'] > 0) {
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../">Home</a></li>
-            <li class="breadcrumb-item"><a href="./app-listing?category=">Danh mục <?= $app['catgory'] ?></a></li>
+            <li class="breadcrumb-item"><a href="./app-listing?category=">Danh mục <?= $app['category'] ?></a></li>
             <li class="breadcrumb-item active" aria-current="page">Ứng dụng <?= $app['name'] ?></li>
             
     </nav>

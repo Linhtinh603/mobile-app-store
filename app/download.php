@@ -22,7 +22,10 @@ function process()
     $pdo = Common::getPdo();
     // kiem tra app co phai o trang thai cho tai khong
     $sql = 'SELECT price, download_location  FROM apps';
-    $sql .= ' WHERE id= :id AND status = 2';
+    $sql .= ' WHERE id= :id ';
+    if(!AccountUtility::isAdmin()){
+        $sql .= ' AND status = 2';
+    }
     $sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
     $sth->execute(array(':id' => $id));
     $red = $sth->fetchAll();
@@ -39,7 +42,7 @@ function process()
     $sth->execute(array(':account_id' => AccountUtility::getId(), ':app_id' => $id));
     $red = $sth->fetchAll();
     if ($red[0]['COUNT(*)'] == 0) {
-        if ($appPrice > 0) {
+        if (!AccountUtility::isAdmin() && $appPrice > 0) {
             ViewUtility::redirectUrl();
         } else {
             // them vao bang app_purchased_history

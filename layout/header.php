@@ -12,6 +12,11 @@ require_once __DIR__ . '/head.php' ?>
 
     $sql_get_category = "SELECT * from categories";
     $DOMAIN_URL = Config::get('publicPath');
+
+    $app_name = '';
+    if(isset($_GET['name_app']) && $_GET['name_app']){
+        $app_name = $_GET['name_app'];
+    }
  
 ?>
    
@@ -48,8 +53,9 @@ require_once __DIR__ . '/head.php' ?>
         </li>
        
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm ứng dụng" aria-label="Search">
+        <form class="form-inline my-2 my-lg-0"  method="GET">
+            <input class="form-control mr-sm-2" type="search" value="<?=$app_name?>"
+                placeholder="Tìm kiếm ứng dụng" aria-label="Search" name="name_app">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
         </form>
         <ul class="navbar-nav mr-auto">

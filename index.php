@@ -30,10 +30,17 @@ require_once __DIR__ . '/__/bootstrap.php';
                 </div>
                 <div class="row app-items m-3">
                     <?php 
+                        $sql_condition = '';
+                        if(isset($_GET['name_app']) && $_GET['name_app']){
+                            $app_name = $_GET['name_app'];
+                            $sql_condition = " and a.name like '$app_name%' ";
+                        }
+
                         $category_id = $v['id'];
                         $sql_get_app = "SELECT a.*, count(app_id) as cnt_dow_app from apps a 
                                         left join app_purchased_history p on a.id = p.app_id 
-                                        where status = 2 and a.category_id = $category_id GROUP by id order by a.id desc limit 6";
+                                        where status = 2 and a.category_id = $category_id $sql_condition 
+                                        GROUP by id order by a.id desc limit 6";
                         foreach($pdo->query($sql_get_app) as $v2){
                     ?>
                         <div class="col-sm-4 col-md-3 col-lg-2 ">

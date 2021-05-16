@@ -12,15 +12,21 @@ use App\Utility\AccountUtility;
 
 <?php
 // check log in 
-AccountUtility::requireLogin();
-if (!AccountUtility::isUser()) {
-    ViewUtility::redirectUrl();
-}
+    AccountUtility::requireLogin();
+    if (!AccountUtility::isUser()) {
+        ViewUtility::redirectUrl();
+    }
 
-$pdo = Common::getPdo();
+    if (AccountUtility::isDev()) {
+        ViewUtility::redirectUrl('account/');
+    }
 
+    $pdo = Common::getPdo();
+    $DOMAIN_URL = Config::get('publicPath');
+
+    $user_id_current = AccountUtility::getId();
     
-    $sql_get_user = "SELECT * from accounts where id = 4  and account_type = 1";
+    $sql_get_user = "SELECT * from accounts where id = $user_id_current and account_type = 1";
     $balance = 0;
     foreach($pdo->query($sql_get_user) as $val){
         $user_cd = $val['id'];
@@ -32,8 +38,9 @@ $pdo = Common::getPdo();
         $address = $_POST['address'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
-        $img_extension1 = strtolower(pathinfo($_FILES["avatar"]["img_cmnd_1"],PATHINFO_EXTENSION));
-        $img_extension2 = strtolower(pathinfo($_FILES["avatar"]["img_cmnd_2"],PATHINFO_EXTENSION));
+        $img_extension1 = strtolower(pathinfo($_FILES["img_cmnd_1"]["tmp_name"],PATHINFO_EXTENSION));
+        $img_extension2 = strtolower(pathinfo($_FILES["img_cmnd_1"]["tmp_name"],PATHINFO_EXTENSION));
+        $balance_p =  $balance - 500000;
         uploadImg($user_cd, 'img_cmnd_1',$img_extension1);
         uploadImg($user_cd, 'img_cmnd_2',$img_extension2);
       
@@ -42,7 +49,8 @@ $pdo = Common::getPdo();
                                 developer_name = '$develop_name', developer_email = '$email', 
                                 developer_phone_number = '$phone', developer_address = '$address',
                                 cmnd_front_image = 'upload_cmnd/$user_cd/img_cmnd_1.$img_extension1',
-                                cmnd_back_image = 'upload_cmnd/$user_cd/img_cmnd_2.$img_extension2'
+                                cmnd_back_image = 'upload_cmnd/$user_cd/img_cmnd_2.$img_extension2',
+                                balance = $balance_p
                             WHERE id = $user_cd ";
         $pdo->exec($sql_update_uprade);   
 
@@ -178,10 +186,16 @@ $pdo = Common::getPdo();
             email = $('#email').val(),
             phone = $('#phone').val(),
             checkImg1 = $('#checkImg1').val(),
-            checkImg2 = $('#checkImg2').val();
+            checkImg2 = $('#checkImg2').val(),
+            balance = <?=$balance?>;
         
         if(!name || !address || !email || !phone || !checkImg1 || !checkImg2){
             alert('Vui lòng nhập đầy đủ thông tin');
+            return;
+        }
+
+        if(balance < 500000){
+            alert('Bạn không đủ tiền để thanh toán');
             return;
         }
 
