@@ -187,16 +187,19 @@ if (ViewUtility::isPostReq()) {
                     </thead>
 
                     <tbody>
-                        <?php foreach ($cardList as $card) { ?>
+                        <?php
+                        $cardIndexUsed = 0;
+                        foreach ($cardList as $card) { 
+                        $cardIndexUsed++;    
+                        ?>
                             <tr>
-                                <th scope="row"><?= $card['id'] ?></th>
-                                <td><?= $card['id'] ?></td>
+                                <th scope="row"><?=$cardIndexUsed + $start_from ?></th>
                                 <td><?= $card['seri_number'] ?></td>
                                 <td><?= $card['denomination'] ?></td>
                                 <td>
                                     <?php
-                                    if (isset($hisotry['created_time'])) {
-                                        $date = new DateTime($hisotry['created_time']);
+                                    if (isset($card['created_time'])) {
+                                        $date = new DateTime($card['created_time']);
                                         echo $date->format('d/m/Y h:m:s');
                                     } else {
                                         $date = new DateTime();

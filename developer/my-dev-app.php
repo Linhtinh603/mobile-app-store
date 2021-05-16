@@ -78,7 +78,8 @@ require_once __DIR__ . '/../__/bootstrap.php';
                 ?>
                     <tr>
                         <th scope="row"><?=$i?></th>
-                        <td><?=$v['name']?></td>
+                        <td> <img src="<?=$DOMAIN_URL.'public/'.$v['icon']?>" class="app-icon"> </img>  
+                                <?=$v['name']?></td>
                         <td><?=$v['category_name']?></td>
                         <?php if($v['price'] > 0){ ?>
                             <td> <span class="badge badge-primary"> Có phí </span> </td>
@@ -99,8 +100,11 @@ require_once __DIR__ . '/../__/bootstrap.php';
                             <td> <span class="badge badge-dark"> Bị từ chối </span> </td>
                         <?php } ?>
                         <td> 
-                            <a class="btn btn-success" href="<?=$DOMAIN_URL.'developer/update-application.php?id='.$v['id']?>">Cập nhật</a>
-                            <a class="btn btn-danger" onclick="resetStatusApp(<?=$v['id']?>, <?=$v['id']?>)">Gỡ bỏ</a>  
+                            <!--Ẩn đi nếu app trong trạng thái gỡ bỏ -->
+                            <?php if($v['status'] != 3){ ?>
+                                <a class="btn btn-success" href="<?=$DOMAIN_URL.'developer/update-application.php?id='.$v['id']?>">Cập nhật</a>
+                                <a class="btn btn-danger" onclick="resetStatusApp(<?=$v['id']?>, <?=$v['id']?>,<?=$user_id_current?>)">Gỡ bỏ</a>  
+                            <?php } ?>
                         <td>
                     </tr>
                 <?php $i++; } ?>
@@ -113,27 +117,3 @@ require_once __DIR__ . '/../__/bootstrap.php';
 </body>
 <?php require_once __DIR__ . '/../layout/footer.php' ?>
 </html>
-
-<script>
-    function resetStatusApp(id, status){
-        var result = confirm("Bạn có muốn gỡ không ?");
-        if (result) {
-            $.ajax({
-                url:'./ajax/ajax_reset_status.php',
-                method:"POST",
-                data: {
-                    id: id,
-                    status : status,
-                    user_cd : <?=$user_id_current?>
-                },
-                dataType: 'JSON',
-                success: function(res) {  
-                    location.reload();  
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });   
-        }
-    }
-</script>

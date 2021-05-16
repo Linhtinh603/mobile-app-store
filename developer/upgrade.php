@@ -139,50 +139,9 @@ use App\Utility\AccountUtility;
 
     </div>
 </body>
+<script>
+    var balance = <?=$balance?>;
+</script>
 <?php require_once __DIR__ . '/../layout/footer.php' ?>
 </html>
 
-<script>
-
-    $("#img_cmnd_1" ).change(function() {
-        if (this.files[0].size > 0) {
-            $('#checkImg1').val('1');
-        }else{
-            $('#checkImg1').val('');
-        }
-    });
-
-    $("#img_cmnd_2" ).change(function() {
-        if (this.files[0].size > 0) {
-            $('#checkImg2').val('1');
-        }else{
-            $('#checkImg2').val('');
-        }
-    });
-
-    function clickUprade(){
-         var name = $('#name').val(),
-            address = $('#address').val(),
-            email = $('#email').val(),
-            phone = $('#phone').val(),
-            checkImg1 = $('#checkImg1').val(),
-            checkImg2 = $('#checkImg2').val(),
-            balance = <?=$balance?>;
-        
-        if(!name || !address || !email || !phone || !checkImg1 || !checkImg2){
-            alert('Vui lòng nhập đầy đủ thông tin');
-            return;
-        }
-
-        if(balance < 500000){
-            alert('Bạn không đủ tiền để thanh toán');
-            return;
-        }
-
-        $('#submitFormUprade').submit();
-
-    }
-
-
-
-</script>

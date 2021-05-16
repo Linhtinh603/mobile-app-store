@@ -94,6 +94,8 @@ function processPost()
     }
     $stmt = $pdo->prepare($sql);
     $stmt->execute($param);
+
+    ViewUtility::redirectUrl("account");
 }
 
 if (ViewUtility::isPostReq()) {

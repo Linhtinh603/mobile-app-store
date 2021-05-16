@@ -79,7 +79,7 @@ if ($app['price'] > 0) {
     <div class="row mx-auto">
       <div class="col-2">
         <div class="">
-          <img src="<?= Config::get('publicPath') . 'public/' . $app['icon'] ?>">
+          <img src="<?= Config::get('publicPath') . 'public/' . $app['icon'] ?>" class="app-logo">
         </div>
       </div>
       <div class="col">

@@ -143,11 +143,8 @@ if (ViewUtility::isPostReq()) {
                         </div>
                     <?php } ?>
                 </div>
-                <div class="form-group mb-0">
-                    <label for="fullName">Ảnh đại diện</label>
-                </div>
-                <div class="custom-file">
-                    <label for="avatar" class="custom-file-label">chọn ảnh đại diện</label>
+                <div class="form-group">
+                    <label for="avatar" class="">Chọn ảnh đại diện</label>
                     <input name="avatar" type="file" accept="image/x-png,image/jpeg" class="form-control-file <?= isset($validate['avatar']) ? 'is-invalid' : '' ?>" id="avatar">
                     <?php if (isset($validate['avatar'])) { ?>
                         <div class="invalid-feedback">

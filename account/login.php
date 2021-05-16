@@ -45,7 +45,9 @@ function processPost()
     $red = $sth->fetchAll();
     if (count($red) == 1) {
         AccountUtility::setLogin($red[0]);
-        if (isset($_GET['redirect'])) {
+        if(AccountUtility::isAdmin()) {
+            ViewUtility::redirectUrl('admin');
+        } elseif (isset($_GET['redirect'])) {
             ViewUtility::redirectUrl($_GET['redirect'],true);
         } else {
             ViewUtility::redirectUrl();

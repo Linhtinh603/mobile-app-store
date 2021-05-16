@@ -93,7 +93,7 @@ $app['images'] =  json_decode($app['images'], true) ?? [];
                 <th scope="row"> <label for="img_list" class="font-weight-bold">Danh sách ảnh giới thiệu </label> </th>
                 <td>
                     <?php foreach ($app['images'] as $index => $image) { ?>
-                        <img class="mx-auto d-block" src="<?= Config::get('publicPath') . "public/upload_app_images/$id/"  . $image . '.jpg' ?>" class="d-block">
+                        <img class="mx-auto d-block img-slider" src="<?= Config::get('publicPath') . "public/upload_app_images/$id/"  . $image . '.jpg' ?>" class="d-block">
                     <?php } ?>
                 </td>
             </tr>

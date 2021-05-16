@@ -35,6 +35,8 @@ function processPost()
 
     if (!ViewUtility::notBlank($newPassword)) {
         $validate['newPassword'] = 'Mật khẩu mới bị trống';
+    } elseif(!ViewUtility::vaildMinLength($newPassword,5)){
+        $validate['newPassword'] = 'Mật khẩu mới ít nhất phải có 5 ký tự';
     }
 
     if (!ViewUtility::notBlank($reNewPassword)) {
@@ -97,14 +99,18 @@ if (ViewUtility::isPostReq()) {
                     <a href="./my-app.php" class="list-group-item list-group-item-action">Ứng dụng của tôi</a>
                     <a href="./balance.php" class="list-group-item list-group-item-action">Nạp tiền / Lịch sử nạp</a>
                     <a href="../developer/upgrade.php" class="list-group-item list-group-item-action">Nâng cấp tài khoản</a>
-                    <a href="../developer/my-dev-app.php" class="list-group-item list-group-item-action">Developer - Quản lý ứng dụng</a>
-                    <a href="../developer/my-order-list.php" class="list-group-item list-group-item-action">Developer - Xem đơn hàng</a>
+                    <?php if(AccountUtility::isDev()) { ?>
+                        <a href="../developer/my-dev-app.php" class="list-group-item list-group-item-action">Developer - Quản lý ứng dụng</a>
+                        <a href="../developer/my-order-list.php" class="list-group-item list-group-item-action">Developer - Xem đơn hàng</a>
+                    <?php }?>
                 </div>
 
 
                 <div class="col">
                     <h3 class="text-center font-weight-bolder">Thông tin cá nhân</h3>
-                    <img src="https://static.vecteezy.com/system/resources/thumbnails/001/503/756/small/boy-face-avatar-cartoon-free-vector.jpg" class=".avatar-image-full img-thumbnail rounded mx-auto d-block"></img>
+                    <div class="d-flex">
+                    <img class="avatar" src="<?=  Config::get('publicPath') . 'public/' . AccountUtility::get('avatar') ?>"></img>
+                    </div>
 
                     <table class="table">
                         <tr>

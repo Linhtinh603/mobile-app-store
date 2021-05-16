@@ -65,20 +65,20 @@ use App\Utility\ViewUtility;
         $category_p = $_POST['category'];
         $price_p = isset($_POST['price']) && $_POST['price'] ? $_POST['price'] : 0;
       
-        $status_p = 0;
+        $update_state = 0;
         if(isset($_POST['checkPostAppSave']) && $_POST['checkPostAppSave']){
-            $status_p = 1;
+            $update_state = 1;
         }
-        // nếu status hiện tại = 0 và status_p mới nhận được là 1 thì mới update lại status = 1
+        // nếu status hiện tại = 0 và update_state mới nhận được là 1 thì mới update lại status = 1
         $update_status = '';
-        if($status == 0 && $status_p == 1){
+        if($status == 0 && $update_state == 1){
             $update_status = ' ,status = 1 ';
         }
         
         $sql_update_app = "UPDATE apps set name = '$name_p',short_description = '$descript_p', detail_description = '$descript_detail_p',
                                     category_id = '$category_p', price= '$price_p', created_time = '$now' $update_status
                                     where id = $app_id_get";
-        // $update_app = $pdo->exec($sql_update_app);
+        $update_app = $pdo->exec($sql_update_app);
     
         $id_apps = $app_id_get;
 
@@ -174,8 +174,17 @@ use App\Utility\ViewUtility;
 ?>
 
 <body class="developer-index">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../">Home</a></li>
+            <li class="breadcrumb-item"><a href="./my-dev-app.php">Quản lý ứng dụng</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Cập nhật ứng dụng</li>
+            
+    </nav>
+
     <div class="developer-body shadow-sm p-3 m-4 bg-white rounded">
-        <h3 class="text-center font-weight-bolder">Cập nhật ứng dụng</h3>
+        <h3 class="text-center font-weight-bolder">Cập nhật thông tin ứng dụng</h3>
         <span style="color:red">(*)</span> Yêu cầu bắt buộc nhập/ Nếu đăng tải không lưu nháp thì yêu cầu nhập hết các trường
         <form action="" method="post" id="submitFormPostApp" enctype="multipart/form-data">
             <div class="form-group">
@@ -184,6 +193,10 @@ use App\Utility\ViewUtility;
             </div>
             <div class="form-group">
                 <label for="icon" class="font-weight-bold">Icon ứng dụng</label>
+                <?php if($icon){ ?>
+                    <br>
+                    <label class="font-weight-light">Bạn đã chọn FILE nếu muốn thay đổi hay chọn lại!</label>
+                <?php } ?>
                 <input type="file" class="form-control-file" id="icon" name="icon" value="<?=$DOMAIN_URL.$icon?>">
             </div>
             <div class="form-group">
@@ -196,6 +209,10 @@ use App\Utility\ViewUtility;
             </div>
             <div class="form-group">
                 <label for="img_list" class="font-weight-bold">Danh sách ảnh giới thiệu </label>
+                <?php if($img_list){ ?>
+                    <br>
+                    <label class="font-weight-light">Bạn đã chọn FILE nếu muốn thay đổi hay chọn lại!</label>
+                <?php } ?>
                 <input type="file" class="form-control-file" id="img_list" name="img_list[]"  multiple="multiple" >
             </div>
             <div class="form-group">
@@ -219,133 +236,45 @@ use App\Utility\ViewUtility;
                     placeholder="Vui lòng nhập giá bán cho ứng dụng có phí" name="price">
             </div>
             <div class="form-group">
-                <label for="file_setting" class="font-weight-bold">Upload file cài đặt: </label>
-                <input type="file" class="form-control-file" id="file_setting" <?php if($status == 2){echo 'disabled';} ?>
-                    name="file_setting" accept="zip/*" >
+                <label for="file_setting" class="font-weight-bold">Upload file cài đặt: (Dung lượng tối đa: 1000000)</label>
+                <?php if(!$file_setting){ ?>
+                    <input type="file" class="form-control-file" id="file_setting" <?php if($status == 2){echo 'disabled';} ?>
+                        name="file_setting" accept="zip/*" >
+                <?php }else{ ?>
+                    <br>
+                    <label class="font-weight-light">Bạn đã UPLOAD FILE và không thể thay đổi</label>
+                <?php } ?>
             </div>
-
-            <p class="font-weight-lighter">Sau khi đăng tải ứng dụng thì bạn cần chờ đợi để quản trị viên duyệt ứng dụng của bạn.
-                <br> Bạn có thể kiểm tra trạng thái ứng dụng ở mục quản lý ứng dụng ở tại trang thông tin cá nhân
-            </p>
-            <p class="font-weight-lighter">Bạn cũng có thể lưu bản nháp ứng dụng này và chỉnh sửa đăng tải lại sau.
-            </p>
 
             <input type="hidden" id="checkIcon" value="<?=$icon?>">
             <input type="hidden" id="checkImgList" value="<?=$name?>">
             <input type="hidden" id="checkFileSetting">
             <input type="hidden" name="postApp" value="1">
             <input type="hidden" name="checkPostAppSave" id="checkPostAppSave" value = "">
-
-            <button type="button" class="btn btn-secondary" onclick="clickPostAppTemp()">Lưu bản nháp</button>
-            <button type="button" class="btn btn-primary" onclick="clickPostApp()">Đăng tải</button>
+            
+            <?php if($status == 0){ ?>
+                <button type="button" class="btn btn-success" onclick="clickPostAppTemp()"> Thay đổi thông tin </button>
+            <?php } ?>
+            <?php if($status == 2 || $status == 1){ ?>
+                <button type="button" class="btn btn-success" onclick="clickPostApp()"> Cập nhật ứng dụng </button>
+            <?php } ?>
+            <!-- Chỉ hiển thị khi app đó đang ở bản nháp-->
+            <?php if($status == 0){ ?>
+                <button type="button" class="btn btn-primary" onclick="clickPostApp()">Đăng tải </button>
+            <?php } ?>
         </form>
     </div>
     <div class="developer-footer">
 
     </div>
 </body>
+<script>
+    var status = <?= $status ?>;
+    var file_setting = '<?=$file_setting?>';
+    var icon_p = '<?=$icon?>';
+    var img_list_p = '<?=$img_list?>';
+
+</script>
 <?php require_once __DIR__ . '/../layout/footer.php' ?>
 </html>
 
-<script>
-
-    $( document ).ready(function() {
-        var file_setting = '<?=$file_setting?>';
-        if(file_setting){
-            $('#file_setting').html('Bạn đã có file');
-            console.log($('#file_setting').attr('title'));
-        }
-    });
-
-    $("#category_app" ).change(function() {
-        var val = $(this).val();
-        if(val == 'not_free'){
-            $('#show-price-app').show();
-        }else{
-            $('#show-price-app').hide();
-            $('#price').val('');
-        }
-    });
-
-    $("#icon" ).change(function() {
-        if (this.files[0].size > 0) {
-            $('#checkIcon').val('1');
-        }else{
-            $('#checkIcon').val('');
-        }
-    });
-
-    $("#file_setting" ).change(function() {
-        var status = <?=$status?>;
-        if(status == 2){
-            $('#checkFileSetting').val('1');
-            alert('Không được thay đổi file cài đặt');
-            return;
-        }
-        if (this.files[0].size >= 1000000) {
-            alert('Dung lượng file phải < 1000000');
-            return;
-        }
-
-        if (this.files[0].size > 0) {
-            $('#checkFileSetting').val('1');
-        }else{
-            $('#checkFileSetting').val('');
-        }
-        
-        if (this.files[0].size > 0) {
-            $('#checkFileSetting').val('1');
-        }else{
-            $('#checkFileSetting').val('');
-        }
-    });
-
-    $("#img_list" ).change(function() {
-        if (this.files[0].size > 0) {
-            $('#checkImgList').val('1');
-        }else{
-            $('#checkImgList').val('');
-        }
-    });
-
-    function clickPostAppTemp(){
-        var name = $('#name').val(),
-            descript = $('#descript').val(),
-            descript_detail = $('#descript_detail').val(),
-            category = $('#category').val(),
-            category_app = $('#category_app').val(),
-            price = $('#price').val(),
-            checkIcon = $('#checkIcon').val(),
-            checkFileSetting = $('#checkFileSetting').val(),
-            checkImgList = $('#checkImgList').val();
-
-        if(!name || !category || !category_app){
-            alert('Bạn phải nhập Name , Tên thể loại , Loại ứng dụng');
-            return ;
-        }
-        $('#checkPostAppSave').val('');
-        $('#submitFormPostApp').submit();
-    }
-
-
-    function clickPostApp(){
-        var name = $('#name').val(),
-            descript = $('#descript').val(),
-            descript_detail = $('#descript_detail').val(),
-            category = $('#category').val(),
-            category_app = $('#category_app').val(),
-            price = $('#price').val(),
-            checkIcon = $('#checkIcon').val(),
-            checkFileSetting = $('#checkFileSetting').val(),
-            checkImgList = $('#checkImgList').val();
-
-        if(!name || !descript || !descript_detail || !category || !category_app 
-            || !checkIcon || !checkFileSetting || !checkImgList){
-            alert('Bạn phải nhập hết các trường');
-            return ;
-        }
-        $('#checkPostAppSave').val('1');
-        $('#submitFormPostApp').submit();
-    }
-
-</script>
