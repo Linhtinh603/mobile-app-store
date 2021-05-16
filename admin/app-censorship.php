@@ -76,7 +76,7 @@ while ($val = $stmt->fetch()) {
                 <a href="./" class="list-group-item list-group-item-action ">Thống kê</a>
                 <a href="#" class="list-group-item list-group-item-action active">Kiểm duyệt ứng dụng</a>
                 <a href="./money-card.php" class="list-group-item list-group-item-action">Quản lý mã thẻ</a>
-                <a href="./category" class="list-group-item list-group-item-action ">Quản lý danh mục</a>
+                <a href="./category.php" class="list-group-item list-group-item-action ">Quản lý danh mục</a>
             </div>
 
             <div class="col">

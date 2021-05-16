@@ -32,6 +32,10 @@
     height: 50px;
     float: left;
 }
+.avatar-image-full{
+    max-width: 50px;
+    height: auto;
+}
 
 body.trangchu .app-items .card:hover {
     text-shadow: 0.5px 0.5px;

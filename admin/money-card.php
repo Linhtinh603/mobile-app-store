@@ -117,7 +117,7 @@ if (ViewUtility::isPostReq()) {
                 <a href="./" class="list-group-item list-group-item-action ">Thống kê</a>
                 <a href="./app-censorship.php" class="list-group-item list-group-item-action ">Kiểm duyệt ứng dụng</a>
                 <a href="#" class="list-group-item list-group-item-action active">Quản lý mã thẻ</a>
-                <a href="./category" class="list-group-item list-group-item-action ">Quản lý danh mục</a>
+                <a href="./category.php" class="list-group-item list-group-item-action ">Quản lý danh mục</a>
             </div>
 
             <div class="col">

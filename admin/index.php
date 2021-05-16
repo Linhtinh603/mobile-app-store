@@ -1,5 +1,48 @@
 <?php
 require_once __DIR__ . '/../__/bootstrap.php';
+use App\Utility\ViewUtility;
+use App\Utility\AccountUtility;
+
+AccountUtility::requireLogin();
+if (!AccountUtility::isAdmin()) {
+    ViewUtility::redirectUrl();
+}
+
+// tinh tong so luong app
+$pdo = Common::getPdo();
+$sql = 'SELECT count(*) as count FROM apps WHERE status = 2';
+$sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute();
+$res = $sth->fetchAll();
+$totalApps = $res[0]['count'];
+
+// tinh tong so luong app mien phi
+$sql = 'SELECT count(*) as count FROM apps WHERE status = 2 AND price = 0';
+$sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute();
+$res = $sth->fetchAll();
+$totalFreeApps = $res[0]['count'];
+
+$totalPaidApps = $totalApps - $totalFreeApps;
+
+// tinh tong so luong tai app
+$pdo = Common::getPdo();
+$sql = 'SELECT count(*) as count FROM app_purchased_history';
+$sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute();
+$res = $sth->fetchAll();
+$totalDownloads = $res[0]['count'];
+
+// tinh tong so luong tai app mien phi
+$pdo = Common::getPdo();
+$sql = 'SELECT count(*) as count FROM app_purchased_history WHERE purchased_price = 0';
+$sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute();
+$res = $sth->fetchAll();
+$totalFreeDownloads = $res[0]['count'];
+
+$totalPaidDownloads = $totalDownloads - $totalFreeDownloads;
+
 ?>
 <html>
 
@@ -21,7 +64,7 @@ require_once __DIR__ . '/../__/bootstrap.php';
             class="list-group-item list-group-item-action ">Kiểm duyệt ứng dụng</a> 
         <a href="./money-card.php"
             class="list-group-item list-group-item-action">Quản lý mã thẻ</a>
-        <a href="./category"
+        <a href="./category.php"
             class="list-group-item list-group-item-action ">Quản lý danh mục</a>
     </div>
 
@@ -35,23 +78,23 @@ require_once __DIR__ . '/../__/bootstrap.php';
             <tbody>
                 <tr>
                     <th scope="row">Tổng số ứng dụng</th>
-                    <td>23</td> 
+                    <td><?= $totalApps ?></td> 
                 </tr>
                 <tr>
                     <th scope="row">Số ứng dụng miễn phí</th>
-                    <td>12 (53%)</td> 
+                    <td><?= $totalFreeApps ?> (<?= round($totalFreeApps/$totalApps * 100, 2) ?>%)</td> 
                 </tr>
                 <tr>
                     <th scope="row">Tổng số lượt tải miễn phí</th>
-                    <td>55</td> 
+                    <td><?= $totalFreeDownloads ?></td> 
                 </tr>
                 <tr>
                     <th scope="row">Số ứng dụng có phí</th>
-                    <td>12 (43%)</td> 
+                    <td><?= $totalPaidApps ?> (<?= round($totalPaidApps/$totalApps * 100, 2) ?>%)</td> 
                 </tr>
                 <tr>
                     <th scope="row">Tổng số lượt mua ứng dụng</th>
-                    <td>55</td> 
+                    <td><?= $totalPaidDownloads ?></td> 
                 </tr>
             </tbody>
         </table>

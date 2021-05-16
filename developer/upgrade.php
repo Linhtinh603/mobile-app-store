@@ -17,10 +17,6 @@ use App\Utility\AccountUtility;
         ViewUtility::redirectUrl();
     }
 
-    if (AccountUtility::isDev()) {
-        ViewUtility::redirectUrl('account/');
-    }
-
     $pdo = Common::getPdo();
     $DOMAIN_URL = Config::get('publicPath');
 
@@ -38,8 +34,8 @@ use App\Utility\AccountUtility;
         $address = $_POST['address'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
-        $img_extension1 = strtolower(pathinfo($_FILES["img_cmnd_1"]["tmp_name"],PATHINFO_EXTENSION));
-        $img_extension2 = strtolower(pathinfo($_FILES["img_cmnd_1"]["tmp_name"],PATHINFO_EXTENSION));
+        $img_extension1 = strtolower(pathinfo($_FILES["img_cmnd_1"]["name"],PATHINFO_EXTENSION));
+        $img_extension2 = strtolower(pathinfo($_FILES["img_cmnd_1"]["name"],PATHINFO_EXTENSION));
         $balance_p =  $balance - 500000;
         uploadImg($user_cd, 'img_cmnd_1',$img_extension1);
         uploadImg($user_cd, 'img_cmnd_2',$img_extension2);
@@ -53,13 +49,15 @@ use App\Utility\AccountUtility;
                                 balance = $balance_p
                             WHERE id = $user_cd ";
         $pdo->exec($sql_update_uprade);   
-
+        AccountUtility::set('account_type', AccountUtility::DEV);
+        ViewUtility::redirectUrl('account');
+        
         unset($_POST);
     }
 
     function uploadImg($user_cd, $img_name ,$img_extension){
         $path_img = "../public/upload_cmnd/".$user_cd;
-        $path_upload = "../public/upload_cmnd/".$user_cd.'/'.$img_name.$img_extension;
+        $path_upload = "../public/upload_cmnd/".$user_cd.'/'.$img_name.'.'.$img_extension;
 
         if (!file_exists($path_img)) {
             mkdir($path_img, 0777);
@@ -129,24 +127,6 @@ use App\Utility\AccountUtility;
                 <input type="hidden" id="checkImg2">
                 <label for="img_cmnd_2">Tải lên chứng minh nhân dân mặt sau</label>
                 <input type="file" accept="image/x-png,image/jpeg" class="form-control-file" id="img_cmnd_2"  name="img_cmnd_2">
-            </div>
-            <div class="form-group row css-div-check-money">
-                <label for="money" class="col-md-6">
-                    Số tiền hiện có: 
-                    <span class="balance_user"><?=$balance?></span>
-                </label>
-                <label class="col-md-6"> 
-                    Số tiền cần thanh toán: 
-                    <span>500,000</span>
-                </label>
-                <br>
-                <?php
-                    if($balance < 500000){
-                ?>
-                 <label class="color-red">  Bạn không đủ tiền để thanh toán , vui lòng nạp thêm vào tài khoản </label>
-                <?php
-                    }
-                ?>
             </div>
             <input type="hidden" value="uprade" name="uprade">
             <p class="font-weight-lighter">Lưu ý: Bạn sẽ bị trừ 500 000đ để thực hiện nâng cấp tài khoản.

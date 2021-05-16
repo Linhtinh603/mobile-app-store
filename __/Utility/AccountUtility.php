@@ -43,6 +43,11 @@ class AccountUtility
         return self::$info[$key] ?? null;
     }
 
+    public static function set($key,$valule){
+        self::$info[$key] = $valule;
+        $_SESSION['account'] = self::$info;
+    }
+
     public static function getId(){
         return self::$info['id'] ?? null;
     }

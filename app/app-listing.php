@@ -59,11 +59,6 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '__' .
         $sql_condition = " and a.created_by = $user_cd ";
     }
 
-    if(isset($_GET['name_app']) && $_GET['name_app']){
-        $app_name = $_GET['name_app'];
-        $sql_condition = " and a.name like '$app_name%' ";
-    }
-
     $sql_tmp = " from apps a  $sql_join app_purchased_history p on a.id = p.app_id 
                 where status = 2 $sql_condition ";
     $sql_get_app = "SELECT a.*, count(app_id) as cnt_dow_app " . $sql_tmp . 

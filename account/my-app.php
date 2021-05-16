@@ -40,6 +40,8 @@ require_once __DIR__ . '/../__/bootstrap.php';
                 class="list-group-item list-group-item-action active">Ứng dụng của tôi</a> 
             <a href="./balance.php"
                 class="list-group-item list-group-item-action">Nạp tiền / Lịch sử nạp</a>
+            <a href="../developer/upgrade.php" 
+                class="list-group-item list-group-item-action">Nâng cấp tài khoản</a>
             <a href="../developer/my-dev-app.php"
                 class="list-group-item list-group-item-action">Developer - Quản lý ứng dụng</a>
             <a href="../developer/my-order-list.php"

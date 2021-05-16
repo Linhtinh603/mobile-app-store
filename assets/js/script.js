@@ -43,7 +43,7 @@ function app_detail() {
                 .fail(function (data) {
                     commonModal({
                         title: 'Thông báo',
-                        body: data.responseJSON.err || 'Có lỗi xảy ra',
+                        body: (data && data.responseJSON && data.responseJSON.err) || 'Có lỗi xảy ra',
                         buttons: {
                             yes: {
                                 name: 'Đồng ý', click: function (modalId, close) {
@@ -60,6 +60,153 @@ function app_detail() {
 if (location.pathname.endsWith('/app/detail.php')) {
     app_detail();
 }
+
+/*
+ *  
+ * for admin/category
+ * 
+ */
+
+function admin_category() {
+    $(function () {
+        $('#createBtn').click(function (event) {
+            event.preventDefault()
+            var $val = $('#create-input');
+            var val = $val.val();
+            val = val.trim();
+            if (!val) {
+                $val.addClass('is-invalid');
+                commonModal({
+                    title: 'Thông báo',
+                    body: 'Tên của thể loại bị trống',
+                    buttons: {
+                        yes: {
+                            class: ['btn-primary'],
+                            name: 'Đồng ý', click: function (modalId, close) {
+                                close();
+                            }
+                        }
+                    }
+                });
+                return;
+            } else {
+                $val.removeClass('is-invalid');
+                $.post('', { name: val, action: 'create' }, function (data) {
+                    location.reload();
+                })
+                    .fail(function (data) {
+                        commonModal({
+                            title: 'Thông báo',
+                            body: (data && data.responseJSON && data.responseJSON.err) || 'Có lỗi xảy ra',
+                            buttons: {
+                                yes: {
+                                    class: ['btn-primary'],
+                                    name: 'Đồng ý', click: function (modalId, close) {
+                                        location.reload();
+                                    }
+                                }
+                            }
+                        });
+                    })
+            }
+        });
+
+        $('a[action=update]').click(function (event) {
+            event.preventDefault()
+            var id = $(this).attr('data-id');
+            var $val = $('input[data-id=' + id + ']');
+            var val = $val.val();
+            val = val.trim();
+            if (!val) {
+                $val.addClass('is-invalid');
+                return;
+            } else {
+                $val.removeClass('is-invalid');
+                commonModal({
+                    title: 'Xác nhận',
+                    body: 'Bạn có muốn cập nhật không',
+                    buttons: {
+                        yes: {
+                            name: 'Đồng ý',
+                            class: ['btn-primary'],
+                            click: function (modalId, close) {
+                                $.post('', { id: id, name: val, action: 'update' }, function (data) {
+                                    location.reload();
+                                })
+                                    .fail(function (data) {
+                                        commonModal({
+                                            title: 'Thông báo',
+                                            body: (data && data.responseJSON && data.responseJSON.err) || 'Có lỗi xảy ra',
+                                            buttons: {
+                                                yes: {
+                                                    class: ['btn-primary'],
+                                                    name: 'Đồng ý', click: function (modalId, close) {
+                                                        location.reload();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    })
+                            }
+                        },
+                        no: {
+                            name: 'Không',
+                            class: ['btn-secondary'],
+                            click: function (modalId, close) {
+                                close();
+                            }
+                        }
+                    }
+                });
+            }
+
+        });
+
+        $('a[action=delete]').click(function () {
+            event.preventDefault()
+            var id = $(this).attr('data-id');
+            commonModal({
+                title: 'Thông báo',
+                body: 'Bạn có thực sự muốn xóa',
+                buttons: {
+                    yes: {
+                        class: ['btn-danger'],
+                        name: 'Đồng ý', click: function (modalId, close) {
+                            $.post('', { id: id, action: 'delete' }, function (data) {
+                                location.reload();
+                            })
+                                .fail(function (data) {
+                                    commonModal({
+                                        title: 'Thông báo',
+                                        body: (data && data.responseJSON && data.responseJSON.err) || 'Có lỗi xảy ra',
+                                        buttons: {
+                                            yes: {
+                                                class: ['btn-primary'],
+                                                name: 'Đồng ý', click: function (modalId, close) {
+                                                    location.reload();
+                                                }
+                                            }
+                                        }
+                                    });
+                                })
+                        }
+                    },
+                    no: {
+                        name: 'Không',
+                        click: function (modalId, close){
+                            close();
+                        }
+                    }
+                }
+            });
+        });
+    })
+}
+
+if (location.pathname.endsWith('/admin/category.php')) {
+    admin_category();
+}
+
 
 function commonModal(option) {
     var modalId = 'commonModal';

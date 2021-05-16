@@ -34,37 +34,46 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '__' .
     // end pagination 
 
     $sql_condition = ' ';
-    $title = 'Danh Sách Tất Cả Ứng Dụng';
-    $tab_title = 'Xem danh sách ứng dụng';
+    $title = '';
+    $tab_title = '';
     $sql_join = ' left join ';
-    if(isset($_GET['category']) && $_GET['category']){
-        $categiry_id = $_GET['category'];
-        $category_name = $_GET['category_name'];
+    // if(isset($_GET['category']) && $_GET['category']){
+    //     $categiry_id = $_GET['category'];
+    //     $category_name = $_GET['category_name'];
 
-        $title = "Danh sách ứng dụng theo thể loại : $category_name";
-        $tab_title = 'Xem ứng dụng theo thể loại';
+    //     $title = "Danh sách ứng dụng theo thể loại : $category_name";
+    //     $tab_title = 'Xem ứng dụng theo thể loại';
 
-        $sql_condition = " and category_id = $categiry_id ";
-    }else if(isset($_GET['dow_app']) && $_GET['dow_app']){    
-        // ứng dụng được mua nhiều
-        if($_GET['dow_app'] == 'buy_a_lot'){
-            $title = "Danh sách ứng dụng được mua nhiều";
-            $tab_title = 'Top ứng dụng miễn phí';
-            $sql_condition = ' and a.price > 0 ';
-        }
-        // ứng dụng được miễn phí tải nhiều
-        else if($_GET['dow_app'] == 'download_a_lot'){
-            $title = "Danh sách ứng dụng được miễn phí tải nhiều";
-            $tab_title = 'Top ứng dụng có phí';
-            $sql_condition = ' and a.price = 0 ';
-        }
-        $sql_join = ' inner join ';
-    }else if(isset($_GET['user_app']) && $_GET['user_app']){
-        $title = "Danh sách ứng dụng theo nhà phát triển";
-        $tab_title = 'Xem ứng dụng theo nhà phát triển';
-        $user_cd = $_GET['user_app'];
+    //     $sql_condition = " and category_id = $categiry_id ";
+    // }else if(isset($_GET['dow_app']) && $_GET['dow_app']){    
+    //     // ứng dụng được mua nhiều
+    //     if($_GET['dow_app'] == 'buy_a_lot'){
+    //         $title = "Danh sách ứng dụng được mua nhiều";
+    //         $tab_title = 'Top ứng dụng miễn phí';
+    //         $sql_condition = ' and a.price > 0 ';
+    //     }
+    //     // ứng dụng được miễn phí tải nhiều
+    //     else if($_GET['dow_app'] == 'download_a_lot'){
+    //         $title = "Danh sách ứng dụng được miễn phí tải nhiều";
+    //         $tab_title = 'Top ứng dụng có phí';
+    //         $sql_condition = ' and a.price = 0 ';
+    //     }
+    //     $sql_join = ' inner join ';
+    // }else if(isset($_GET['user_app']) && $_GET['user_app']){
+    //     $title = "Danh sách ứng dụng theo nhà phát triển";
+    //     $tab_title = 'Xem ứng dụng theo nhà phát triển';
+    //     $user_cd = $_GET['user_app'];
 
-        $sql_condition = " and a.created_by = $user_cd ";
+    //     $sql_condition = " and a.created_by = $user_cd ";
+    // }
+
+    $sql_condition = '';
+    if(isset($_GET['name_app']) && $_GET['name_app']){
+        $title = $_GET['name_app'];
+        $tab_title = 'Tìm kiếm';
+
+        $app_name = $_GET['name_app'];
+        $sql_condition = " and a.name like '$app_name%' ";
     }
 
     $sql_tmp = " from apps a  $sql_join app_purchased_history p on a.id = p.app_id 
@@ -99,7 +108,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '__' .
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Tìm kiếm</li>
+            <li class="breadcrumb-item active" aria-current="page"><?=$tab_title?></li>
         </ol>
     </nav>
 

@@ -9,6 +9,25 @@ require_once __DIR__ . '/../__/bootstrap.php';
     <?php require_once __DIR__ . '/../layout/header.php' ?>
 </head>
 
+<?php 
+    use App\Utility\AccountUtility;
+    use App\Utility\ViewUtility;
+
+    $pdo = Common::getPdo();
+    $DOMAIN_URL = Config::get('publicPath');
+
+    if(!AccountUtility::isDev()){
+        ViewUtility::redirectUrl();
+    }   
+    $user_id_current = AccountUtility::getId();
+
+    $sql_get_app_by_user = "SELECT a.*, c.name as category_name from apps a 
+                        left join categories c on a.category_id = c.id 
+                        WHERE a.created_by = $user_id_current 
+                        order by id asc";
+
+?>
+
 <body class="quanlyapp">
 <div class="shadow-sm p-2 m-2 bg-white rounded">
         
@@ -53,33 +72,38 @@ require_once __DIR__ . '/../__/bootstrap.php';
             </thead>
             <tbody>
                 <!-- badge-Light: Bản nháp | badge-Info: đang chờ duyệt | badge-success: Đã được duyệt | badge-dark: đã từ chối  | badge-Danger: Đã gỡ |  -->
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Facebook</td>
-                    <td>Mạng xã hội</td>
-                    <td> <span class="badge badge-success"> Miễn phí </span> </td>
-                    <td> 0đ </td>
-                    <td> <span class="badge badge-Info"> Đang chờ duyệt </span> </td>
-                    <td> <a href="#">Cập nhật</a> | <a href="#">Gỡ bỏ</a>  <td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Facebook</td>
-                    <td>Mạng xã hội</td>
-                    <td> <span class="badge badge-primary"> Có phí </span> </td>
-                    <td> 10 000đ </td>
-                    <td> <span class="badge badge-Light"> Bản nháp </span> </td>
-                    <td> <a href="#">Cập nhật</a> | <a href="#">Gỡ bỏ</a>  <td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Facebook</td>
-                    <td>Mạng xã hội</td>
-                    <td> <span class="badge badge-primary"> Có phí </span> </td>
-                    <td> 10 000đ </td>
-                    <td> <span class="badge badge-dark"> Từ chối </span> </td>
-                    <td> <a href="#">Cập nhật</a> | <a href="#">Gỡ bỏ</a>  <td>
-                </tr>
+                <?php 
+                    $i = 1;
+                    foreach($pdo->query($sql_get_app_by_user) as $v){ 
+                ?>
+                    <tr>
+                        <th scope="row"><?=$i?></th>
+                        <td><?=$v['name']?></td>
+                        <td><?=$v['category_name']?></td>
+                        <?php if($v['price'] > 0){ ?>
+                            <td> <span class="badge badge-primary"> Có phí </span> </td>
+                            <td> <?=number_format($v['price'])?>đ </td>
+                        <?php }else{ ?>
+                            <td> <span class="badge badge-success"> Miễn phí </span> </td>
+                            <td> 0đ </td>
+                        <?php } ?>
+                        <?php if($v['status'] == 0){ ?>
+                            <td> <span class="badge badge-Light"> Lưu nháp </span> </td>
+                        <?php }else if($v['status'] == 1){ ?>
+                            <td> <span class="badge badge-warning"> Đang chờ duyệt </span> </td>
+                        <?php }else if($v['status'] == 2){ ?>
+                            <td> <span class="badge badge-Info"> Đã duyệt </span> </td>
+                        <?php }else if($v['status'] == 3){ ?>
+                            <td> <span class="badge badge-danger"> Đã gỡ </span> </td>
+                        <?php }else if($v['status'] == 4){ ?>
+                            <td> <span class="badge badge-dark"> Bị từ chối </span> </td>
+                        <?php } ?>
+                        <td> 
+                            <a class="btn btn-success" href="<?=$DOMAIN_URL.'developer/update-application.php?id='.$v['id']?>">Cập nhật</a>
+                            <a class="btn btn-danger" onclick="resetStatusApp(<?=$v['id']?>, <?=$v['id']?>)">Gỡ bỏ</a>  
+                        <td>
+                    </tr>
+                <?php $i++; } ?>
             </tbody>
         </table>
     </div>
@@ -89,3 +113,27 @@ require_once __DIR__ . '/../__/bootstrap.php';
 </body>
 <?php require_once __DIR__ . '/../layout/footer.php' ?>
 </html>
+
+<script>
+    function resetStatusApp(id, status){
+        var result = confirm("Bạn có muốn gỡ không ?");
+        if (result) {
+            $.ajax({
+                url:'./ajax/ajax_reset_status.php',
+                method:"POST",
+                data: {
+                    id: id,
+                    status : status,
+                    user_cd : <?=$user_id_current?>
+                },
+                dataType: 'JSON',
+                success: function(res) {  
+                    location.reload();  
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });   
+        }
+    }
+</script>

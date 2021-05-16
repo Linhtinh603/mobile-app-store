@@ -96,6 +96,7 @@ if (ViewUtility::isPostReq()) {
                     <a href="#" class="list-group-item list-group-item-action active">Thông tin cá nhân</a>
                     <a href="./my-app.php" class="list-group-item list-group-item-action">Ứng dụng của tôi</a>
                     <a href="./balance.php" class="list-group-item list-group-item-action">Nạp tiền / Lịch sử nạp</a>
+                    <a href="../developer/upgrade.php" class="list-group-item list-group-item-action">Nâng cấp tài khoản</a>
                     <a href="../developer/my-dev-app.php" class="list-group-item list-group-item-action">Developer - Quản lý ứng dụng</a>
                     <a href="../developer/my-order-list.php" class="list-group-item list-group-item-action">Developer - Xem đơn hàng</a>
                 </div>
@@ -103,7 +104,7 @@ if (ViewUtility::isPostReq()) {
 
                 <div class="col">
                     <h3 class="text-center font-weight-bolder">Thông tin cá nhân</h3>
-                    <img>
+                    <img src="https://static.vecteezy.com/system/resources/thumbnails/001/503/756/small/boy-face-avatar-cartoon-free-vector.jpg" class=".avatar-image-full img-thumbnail rounded mx-auto d-block"></img>
 
                     <table class="table">
                         <tr>
