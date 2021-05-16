@@ -89,7 +89,7 @@ if ($app['price'] > 0) {
           <a href="<?= Config::get('publicPath') . 'app/app-listing.php?category=' . $app['category_id'] . '&category_name=' . $app['category'] ?>" class="p-3 font-weight-bold"><?= $app['category'] ?></a>
           <p><em><?= $app['short_description'] ?></em></p>
           <?php if ($app['price'] == 0) { ?>
-            <div class="badge badge-primary text-wrap">
+            <div class="badge badge-success text-wrap">
               Ứng dụng miễn phí
             </div>
           <?php } else { ?>
@@ -105,7 +105,7 @@ if ($app['price'] > 0) {
           <?php  } else { ?>
             <form action="<?= Config::get('publicPath') . "app/download.php" ?>" method="GET">
               <input type="hidden" name="id" value="<?= $id ?>" />
-              <button class="btn btn-primary float-right" type="submit">Tải xuống</button>
+              <button class="btn btn-success float-right" type="submit">Tải xuống</button>
             </form>
           <?php } ?>
 
@@ -153,35 +153,6 @@ if ($app['price'] > 0) {
       <span class="fa fa-star star-checked"></span>
       <span class="fa fa-star"></span>
     </div>
-    <div class="m-3">
-      <h5>Hữu Võ</h5>
-      <div>
-        Đánh giá:
-        <span class="fa fa-star star-checked"></span>
-        <span class="fa fa-star star-checked"></span>
-        <span class="fa fa-star star-checked"></span>
-        <span class="fa fa-star"></span>
-        <span class="fa fa-star"></span>
-      </div>
-      <div>
-        <p class="text-muted">Ưng dụng ngon</p>
-      </div>
-    </div>
-    <div class="m-3">
-      <h5>Linh văn linh</h5>
-      <div>
-        Đánh giá:
-        <span class="fa fa-star star-checked"></span>
-        <span class="fa fa-star star-checked"></span>
-        <span class="fa fa-star star-checked"></span>
-        <span class="fa fa-star"></span>
-        <span class="fa fa-star"></span>
-      </div>
-      <div>
-        <p class="text-muted">Ưng dụng ngon</p>
-      </div>
-    </div>
-
 
     <h3>Thông tin bổ sung</h3>
     <table class="table">
