@@ -85,7 +85,7 @@ if ($app['price'] > 0) {
       <div class="col">
         <div class="">
           <h3 class="text-info"><?= $app['name'] ?></h3>
-          <a href="<?= Config::get('publicPath') . '/app/app-listing.php?user_app=' .  $app['created_by'] ?>" class="font-weight-bold"><?= $app['developer_name'] ?></a>
+          <a href="<?= Config::get('publicPath') . 'app/app-listing.php?user_app=' .  $app['created_by'] ?>" class="font-weight-bold"><?= $app['developer_name'] ?></a>
           <a href="<?= Config::get('publicPath') . 'app/app-listing.php?category=' . $app['category_id'] . '&category_name=' . $app['category'] ?>" class="p-3 font-weight-bold"><?= $app['category'] ?></a>
           <p><em><?= $app['short_description'] ?></em></p>
           <?php if ($app['price'] == 0) { ?>
